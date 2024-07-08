@@ -93,3 +93,4 @@ Based on the above guidelines, does the person in the image have good posture? G
 args = completion.choices[0]
 
 print(args)
+
