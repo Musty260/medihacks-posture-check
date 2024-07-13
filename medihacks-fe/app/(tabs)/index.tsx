@@ -10,22 +10,77 @@ import { ExternalLink } from '@/components/ExternalLink';
 import { Component } from 'react';
 
 import { LineChart, ProgressChart } from "react-native-chart-kit";
-export default class HomeScreen extends Component {
+export default class HomeScreen extends Component<{}, { DeviceName: string, Judgements: any }> {
 
   constructor(props: any) {
     super(props);
 
-    
+
     this.state = {
-      DeviceName: "TestDevice"
+      DeviceName: "TestDevice",
+      Judgements: null
     }
+
+    this.getJudgements();
+
+  }
+
+  async getJudgements() {
+    await fetch("https://u4ejbprm4rmkgu6wofweoxsp2m0pmpam.lambda-url.eu-west-2.on.aws/", {
+      method: "POST",
+      body: JSON.stringify({
+        device_name: "test_device",
+        pwhash: "test_hash"
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data.body);
+        this.setState({ Judgements: data.body });
+      });
 
   }
 
   render() {
+    let arms = 0;
+    let legs = 0;
+    let upper_body = 0;
+    let torso = 0;
+    let flag = 0;
+
+    if (!!this.state.Judgements) {
+      const arms_arr = this.state.Judgements
+        .filter((x: any) => !!x.arms && !!x.arms.score)
+        .map((x: any) => x.arms.score);
+      arms = arms_arr
+        .reduce((partialSum: number, a: number) => partialSum + a, 0)
+        / arms_arr.length;
+
+      const legs_arr = this.state.Judgements
+        .filter((x: any) => !!x.legs && !!x.legs.score)
+        .map((x: any) => x.legs.score);
+      legs = legs_arr
+        .reduce((partialSum: number, a: number) => partialSum + a, 0)
+        / legs_arr.length;
+
+      const upper_body_arr = this.state.Judgements
+        .filter((x: any) => !!x["upper-body"] && !!x["upper-body"].score)
+        .map((x: any) => x["upper-body"].score);
+      upper_body = upper_body_arr
+        .reduce((partialSum: number, a: number) => partialSum + a, 0)
+        / upper_body_arr.length;
+
+      const torso_arr = this.state.Judgements
+        .filter((x: any) => !!x.torso && !!x.torso.score)
+        .map((x: any) => x.torso.score);
+      torso = torso_arr
+        .reduce((partialSum: number, a: number) => partialSum + a, 0)
+        / torso_arr.length;
+    }
+
     const data = {
       labels: ["Upper Body", "Arms", "Torso", "Legs"], // optional
-      data: [0.4, 0.6, 0.8, .3]
+      data: [upper_body / 10, arms / 10, torso / 10, legs / 10]
     };
 
     const chartConfig = {
@@ -33,7 +88,19 @@ export default class HomeScreen extends Component {
       backgroundGradientFromOpacity: 0,
       backgroundGradientTo: "#08130D",
       backgroundGradientToOpacity: 0,
-      color: (opacity = 1) => `rgba(47, 149, 202, ${opacity})`,
+      color: (opacity = 1) => {
+        if (opacity > .8) return `rgb(12,192,223)`;
+        else if (opacity > .7) return `rgb(8,158,199)`;
+        else if (opacity > .6) return `rgb(4,123,174)`;
+        else if (opacity > .19 && (flag < 2 || flag === 6)) {
+          flag = flag + 1;
+          return `rgb(0,89,150)`;
+        }
+        else {
+          flag = flag + 1;
+          return `rgba(255, 255, 255, ${opacity})`;
+        }
+      },
       strokeWidth: 2, // optional, default 3
       barPercentage: 0.5,
       useShadowColorFromDataset: false // optional
@@ -54,22 +121,22 @@ export default class HomeScreen extends Component {
 
         <ThemedText>Welcome to HAL 1000, the Desktop Posture Monitor which helps you stay comfortable and healthy at your desk. Your device is called <Text style={{ color: "rgb(47, 149, 202)", fontFamily: "monospace" }}>TestDevice</Text>.</ThemedText>
 
-      <ThemedView style={{ backgroundColor: "rgba(47, 149, 202, .05)", paddingVertical: 16, borderRadius: 16 }}>
-        <ThemedText style={{ fontSize: 15, color: "lightgrey", fontWeight: "bold", marginLeft: 15, marginBottom: -5, textAlign: "center"  }}>Your Posture at a Glance</ThemedText>
-        <ProgressChart
-          data={data}
-          width={430}
-          height={230}
-          strokeWidth={17}
-          radius={32}
-          chartConfig={chartConfig}
-          hideLegend={false}
-          style={{ marginLeft: -50, marginTop: 10 }}
-        />
-      </ThemedView>
-    
+        <ThemedView style={{ backgroundColor: "rgba(47, 149, 202, .05)", paddingVertical: 16, borderRadius: 16 }}>
+          <ThemedText style={{ fontSize: 15, color: "lightgrey", fontWeight: "bold", marginLeft: 15, marginBottom: -5, textAlign: "center" }}>Your Posture at a Glance</ThemedText>
+          <ProgressChart
+            data={data}
+            width={430}
+            height={230}
+            strokeWidth={17}
+            radius={32}
+            chartConfig={chartConfig}
+            hideLegend={false}
+            style={{ marginLeft: -50, marginTop: 10 }}
+          />
+        </ThemedView>
+
         {/* <ThemedText type="subtitle">FAQ</ThemedText> */}
-        
+
 
         <Collapsible title="How do I use HAL?">
           <ThemedText>
