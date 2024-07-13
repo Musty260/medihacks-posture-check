@@ -82,6 +82,11 @@ export default class LogScreen extends Component<any, { DeviceName: string, Judg
     this.setState({ Judgements: null }, this.getJudgements);
   }
 
+  aggregateScore(s : any) {
+    const score_sum = s.arms.score + s['upper-body'].score + s.legs.score + s.torso.score;
+    return (score_sum / 4);
+  }
+
   render() {
     let slicedJudgements = [];
 
@@ -214,7 +219,7 @@ export default class LogScreen extends Component<any, { DeviceName: string, Judg
                       content={
                         <>
                           <Ionicons name="body" size={24} color={this.getColor(s.score)} style={{ marginRight: 4 }} />
-                          <ThemedText style={{ color: this.getColor(s.score) }}>{(s.score ? s.score.toString() : "6") + " "}</ThemedText>
+                          <ThemedText style={{ color: this.getColor(this.aggregateScore(s)) }}>{this.aggregateScore(s).toFixed(1) + " "}</ThemedText>
                           <ListItem.Content style={{ marginLeft: 16 }}>
                             <ThemedText style={{ color: "grey", fontSize: 15, fontFamily: "monospace" }}>
                               {moment(new Date(s.timestamp)).fromNow()}

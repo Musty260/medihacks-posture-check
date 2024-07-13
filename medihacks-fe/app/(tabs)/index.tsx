@@ -139,50 +139,29 @@ export default class HomeScreen extends Component<{}, { DeviceName: string, Judg
 
 
         <Collapsible title="How do I use HAL?">
-          <ThemedText>
-            This app has two screens:{' '}
-            <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-            <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-          </ThemedText>
-          <ThemedText>
-            The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-            sets up the tab navigator.
-          </ThemedText>
-          <ExternalLink href="https://docs.expo.dev/router/introduction">
-            <ThemedText type="link">Learn more</ThemedText>
-          </ExternalLink>
+          <ThemedText>Place HAL's enclosure to the side of your desk, so that camera has a good view of you on your chair. 
+          Then simply turn HAL on, and listen his advice on how to improve your posture, given around every 30 seconds.</ThemedText>
         </Collapsible>
 
 
         <Collapsible title="How can HAL improve my health?">
           <ThemedText>
-            You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-            <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
+            According to the <ExternalLink href="https://newsinhealth.nih.gov/2017/08/getting-it-straight"><ThemedText type='link'>US Department of Health and Human Services</ThemedText></ExternalLink>, poor posture can lead to decreased flexibility, back pain, and joint degredation.
+            Based on <ExternalLink href="https://www.hse.gov.uk/msd/dse/good-posture.htm"><ThemedText type='link'>posture guidelines</ThemedText></ExternalLink> by the UK Health and Safety Executive, HAL helps you maintain good posture and thereby avoid these long-term health effects.
           </ThemedText>
         </Collapsible>
 
         <Collapsible title="How does this App Work?">
           <ThemedText>
-            Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-            <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-              custom fonts such as this one.
-            </ThemedText>
+          In addition to HAL's voiced advice, this app provides more detailed information on your posture. A quick summary can be seen on this Home Page, the Log tab provides report-by-report data, and the Leaderboard tab allows you to measure your posture against others using HAL in a weekly competition. 
           </ThemedText>
-          <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-            <ThemedText type="link">Learn more</ThemedText>
-          </ExternalLink>
         </Collapsible>
 
         <Collapsible title="I have an idea to make HAL better!">
           <ThemedText>
-            For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-            <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-            different screen densities
+            Please let us know on our <ExternalLink href="https://devpost.com/software/hal-10000-desktop-posture-monitor">
+            <ThemedText type='link'>Devpost Page</ThemedText></ExternalLink>, or <ExternalLink href=""><ThemedText type='link'>GitHub</ThemedText></ExternalLink>. All suggestions are appreciated!
           </ThemedText>
-          <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-          <ExternalLink href="https://reactnative.dev/docs/images">
-            <ThemedText type="link">Learn more</ThemedText>
-          </ExternalLink>
         </Collapsible>
 
       </ParallaxScrollView>
