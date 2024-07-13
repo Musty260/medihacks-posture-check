@@ -25,8 +25,7 @@ export default function TabTwoScreen() {
             rounded
             icon={{ name: 'trophy', type: 'ionicon', color: 'gold' }}
             containerStyle={{
-              borderColor: 'grey',
-              borderStyle: 'solid',
+              backgroundColor: "rgba(255, 255, 255, .2)",
               borderWidth: 3,
             }}
           />
@@ -35,8 +34,7 @@ export default function TabTwoScreen() {
             rounded
             icon={{ name: 'trophy', type: 'ionicon', color: 'silver' }}
             containerStyle={{
-              borderColor: 'grey',
-              borderStyle: 'solid',
+              backgroundColor: "rgba(255, 255, 255, .2)",
               borderWidth: 3,
             }}
           />
@@ -49,14 +47,14 @@ export default function TabTwoScreen() {
       </View>
       <View style={styles.leaderboardContainer}>
 
-        <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', gap: 16, left: 16, paddingVertical: 13, paddingHorizontal: 10 }}>
+        <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', gap: 16, paddingVertical: 13, paddingRight: -6, paddingLeft: 26, backgroundColor: "rgba(255, 255, 255, .2)", borderTopLeftRadius: 13, borderTopRightRadius: 13 }}>
           <View style={{ flex: 1, alignSelf: 'stretch' }}>
             <ThemedText style={{ fontWeight: "bold" }}>Score</ThemedText>
           </View>
           <View style={{ flex: 4, alignSelf: 'stretch' }}>
             <ThemedText style={{ fontWeight: "bold" }}>Name</ThemedText>
           </View>
-          <View style={{ flex: 1, alignSelf: 'stretch' }}>
+          <View style={{ flex: 1, alignSelf: 'stretch', marginRight: -4 }}>
             <Ionicons name="trophy-outline" size={24} color="white" />
           </View>
         </View>
