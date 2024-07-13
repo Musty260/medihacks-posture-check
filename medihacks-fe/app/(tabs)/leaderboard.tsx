@@ -32,11 +32,26 @@ export default class TabTwoScreen extends Component<{}, { awards: any, leaderboa
       .then(res => res.json())
       .then(data => {
         console.log(data)
-        this.setState({ awards: data.body.awards, leaderboard: [data.body.leaderboard] });
+        this.setState({ 
+          awards: data.body.awards, 
+          leaderboard: data.body.leaderboard.sort(this.compareLB) 
+        });
       });
   }
 
+  compareLB(a: any, b: any) {
+    const a_score = a.score / a.n;
+    const b_score = b.score / b.n;
+    if (a_score < b_score )  return 1;
+    else if (b_score < a_score) return -1;
+    else return 0;
+  }
+
   render() {
+    const now = new Date();
+    const daysSinceThursday =  ((now.getDay() + 3) % 7);
+    const thursday = new Date(now.getTime() - daysSinceThursday * 86400000);
+
     return (
       <ParallaxScrollView
         headerBackgroundColor={{ light: '#D0D0D0', dark: 'rgba(220, 20, 60, .3)' }}
@@ -78,9 +93,9 @@ export default class TabTwoScreen extends Component<{}, { awards: any, leaderboa
         }
 
         <View style={{ marginHorizontal: 15, flexDirection: "row", marginVertical: 10 }}>
-          <Text style={{ fontSize: 14, color: "lightgrey", fontWeight: "bold", flex: 1 }}>Thu 14 - Thu 21</Text>
+          <Text style={{ fontSize: 14, color: "lightgrey", fontWeight: "bold", flex: 1 }}>Thu {thursday.getDate()} - Thu {thursday.getDate() + 7}</Text>
 
-          <Text style={{ alignSelf: "flex-end", fontSize: 14, color: "lightgrey" }}>3 DAYS LEFT</Text>
+          <Text style={{ alignSelf: "flex-end", fontSize: 14, color: "lightgrey" }}>{7 - daysSinceThursday} DAYS LEFT</Text>
         </View>
 
         {
@@ -107,7 +122,7 @@ export default class TabTwoScreen extends Component<{}, { awards: any, leaderboa
 
                     <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', gap: 16, left: 16, paddingVertical: 13, paddingHorizontal: 10 }}>
                       <View style={{ flex: 1, alignSelf: 'stretch' }}>
-                        <ThemedText>{x.score}</ThemedText>
+                        <ThemedText>{(x.score / (x.n * 4)).toFixed(1)}</ThemedText>
                       </View>
                       <View style={{ flex: 4, alignSelf: 'stretch' }}>
                         <ThemedText style={{ fontFamily: "monospace" }}>{x.DeviceName}</ThemedText>

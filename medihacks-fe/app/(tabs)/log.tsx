@@ -6,7 +6,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Component } from 'react';
-import { Chip, ListItem, Button } from '@rneui/base';
+import { Chip, ListItem, Button, Icon } from '@rneui/base';
 import { LineChart } from 'react-native-chart-kit';
 
 import moment from "moment";
@@ -100,13 +100,22 @@ export default class LogScreen extends Component<any, { DeviceName: string, Judg
 
     console.log(datasets);
 
+    let flag = 0;
+
     const config = {
       backgroundGradientFrom: "#1E2923",
       backgroundGradientFromOpacity: 0,
       backgroundGradientTo: "#08130D",
       backgroundGradientToOpacity: 0,
       decimalPlaces: 2, // optional, defaults to 2dp
-      color: (opacity = 1) => `rgba(47, 149, 202, ${opacity})`,
+      color: (opacity = 1) => {
+        flag = flag + 1;
+        if (flag === 13) return "green";
+        else if (flag === 14) return "orange";
+        else if (flag === 15) return "purple";
+        else if (flag === 16) return "white";
+        else return `rgba(47, 149, 202, ${opacity})`
+      },
       labelColor: (opacity = 1) => `rgba(47, 149, 202, ${opacity})`,
       style: {
         borderRadius: 16
@@ -166,6 +175,28 @@ export default class LogScreen extends Component<any, { DeviceName: string, Judg
                     style={{ marginTop: 20 }}
                   />
                 }
+                <ThemedView style={{ display: "flex", flexDirection: "row", backgroundColor: "rgba(0, 0, 0, 0)", paddingLeft: 60, paddingRight: 30 }}>
+                  <ThemedView style={{ flex: 1, display: "flex", flexDirection: "row", backgroundColor: "rgba(0, 0, 0, 0)" }}>
+                    <Icon name='circle' type='feather' color='green' style={{ marginRight: 10 }} />
+                    <ThemedText> Upper Body </ThemedText>
+                  </ThemedView>
+                  <ThemedView style={{ flex: 1, display: "flex", flexDirection: "row", backgroundColor: "rgba(0, 0, 0, 0)" }}>
+                    <Icon name='circle' type='feather' color='orange' style={{ marginRight: 10 }} />
+                    <ThemedText> Arms </ThemedText>
+                  </ThemedView>
+                </ThemedView>
+
+                <ThemedView style={{ display: "flex", flexDirection: "row", backgroundColor: "rgba(0, 0, 0, 0)", paddingLeft: 60, paddingRight: 30, marginTop: 15 }}>
+                  <ThemedView style={{ flex: 1, display: "flex", flexDirection: "row", backgroundColor: "rgba(0, 0, 0, 0)" }}>
+                    <Icon name='circle' type='feather' color='purple' style={{ marginRight: 10 }} />
+                    <ThemedText> Torso </ThemedText>
+                  </ThemedView>
+                  <ThemedView style={{ flex: 1, display: "flex", flexDirection: "row", backgroundColor: "rgba(0, 0, 0, 0)" }}>
+                    <Icon name='circle' type='feather' color='white' style={{ marginRight: 10 }} />
+                    <ThemedText> Legs </ThemedText>
+                  </ThemedView>
+                </ThemedView>
+                
               </ThemedView>
 
               <ThemedView>
@@ -216,8 +247,8 @@ export default class LogScreen extends Component<any, { DeviceName: string, Judg
                             Legs &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {s.legs ? s.legs.score : 0}/10
                           </ThemedText>
                         </ThemedView>
-                        <ThemedText style={{ marginTop: 10 }}>
-                          Summary: {s.description || "Placeholder Summary"}
+                        <ThemedText style={{ marginTop: 10, fontStyle: "italic" }}>
+                          {'"' + (s.description || "Placeholder Summary") + '"'}
                         </ThemedText>
                       </ThemedView>
                     </ListItem.Accordion>
