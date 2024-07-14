@@ -1,4 +1,4 @@
-import RPi.GPIO
+import RPi.GPIO as GPIO
 #import cv2 # for usb cameras
 import json
 import time
@@ -26,9 +26,31 @@ CREATE_JUDGEMENT_URL = os.getenv("CREATE_JUDGEMENT_URL")
 
 image_path = "figure.png"
 
+VOLUME = 5
+INCREASE_PIN = 19
+DECREASE_PIN = 26
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(INCREASE_PIN, GPIO.IN)
+GPIO.setup(DECREASE_PIN, GPIO.IN)
+
 CHUNK_SIZE=128
 voice_id = "LI6bpCK7RzAFvPBPWFrT"
 url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+
+# Control volume variable, used in button press callback
+def increase_vol(pin):
+    global VOLUME
+    if VOLUME < 10: 
+        VOLUME += 1
+    print(VOLUME)
+    mixer.music.set_volume(VOLUME/10)
+
+def decrease_vol(pin):
+    global VOLUME
+    if VOLUME > 0: 
+        VOLUME -= 1
+    print(VOLUME)
+    mixer.music.set_volume(VOLUME/10)
 
 # Convert text to speech via Elevenlabs API
 def tts(text):
@@ -196,7 +218,8 @@ def posture_check(role, prompt, images):
 							"type": "string",
 							"description": """
 								Look at the guidelines I have provided above in each category. Evaluate the posture of the user in the image based off the guidelines, then pick one to two that you see they aren't meeting. Give me a short, brief sentence in a neutral, unemotional tone instructing the user to correct their posture based on those guidelines you've identified.
-								Even if you see the user is not meeting lots of the guidelines, just pick the ones you believe are the most important or relevant to correct.
+								If you see the user is not meeting lots of the guidelines, just pick the ones you believe are the most important or relevant to correct.
+								If the users posture is good, and they are meeting most or all of the guidelines, tell them that their posture is good, and maybe mention a guideline for the user to remember to maintain, if appropriate.
 								If you cannot tell if the user is meeting a guideline, due to it being unclear or not visible in the image, just ignore that guideline.
 								If you absolutely cannot tell what's going on in the image and can't give an instruction, just give me a short sentence saying that you cannot tell what's going on in the image.
 							"""
@@ -230,6 +253,10 @@ def posture_check(role, prompt, images):
 # Webcam
 # cam = cv2.VideoCapture(0)
 
+# Assign volume control functions to button press inputs
+GPIO.add_event_detect(INCREASE_PIN, GPIO.FALLING, callback=increase_vol, bouncetime=100) 
+GPIO.add_event_detect(DECREASE_PIN, GPIO.FALLING, callback=decrease_vol, bouncetime=100)
+
 # OpenAI client
 client = OpenAI()
 
@@ -261,6 +288,20 @@ while True:
 	args["device_name"] = 'test_device'
 	args["pwhash"] = "test_hash"
 	print("args: ", args)
+
+	# Prompt response error handling
+	if "upper_body_score" not in args:
+		args["upper_body_score"] = {'guidelines': [2, 2, 2, 2], 'score': 0}
+	if "arms_score" not in args:
+		args["arms_score"] = {'guidelines': [2, 2, 2, 2, 2, 2, 2], 'score': 0}
+	if "torso_score" not in args:
+		args["torso_score"] = {'guidelines': [2, 2, 2], 'score': 0}
+	if "legs_score" not in args:
+		args["legs_score"] = {'guidelines': [2, 2, 2, 2], 'score': 0}
+	if "instructions" not in args:
+		args["instructions"] = "I cannot make out your posture from this view."
+	print("modified args: ", args)
+
 	response = requests.post(CREATE_JUDGEMENT_URL, json = args)
 	print("response: ", response.content)
 
@@ -276,7 +317,7 @@ while True:
 	# Play the voice
 	mixer.init()
 	mixer.music.load("output.mp3")
-	mixer.music.set_volume(0.9)
+	mixer.music.set_volume(VOLUME/10)
 	mixer.music.play()
 	while mixer.music.get_busy() == True:
 		continue
