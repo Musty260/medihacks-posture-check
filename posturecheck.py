@@ -26,7 +26,7 @@ CREATE_JUDGEMENT_URL = os.getenv("CREATE_JUDGEMENT_URL")
 
 image_path = "figure.png"
 
-VOLUME = 5
+VOLUME = 10
 INCREASE_PIN = 19
 DECREASE_PIN = 26
 GPIO.setmode(GPIO.BCM)
@@ -162,7 +162,7 @@ def posture_check(role, prompt, images):
 								"guidelines": { "type": "array", "items": { "type": "number", "enum": [0, 1, 2] } },
 								"score": { "type": "number" }
 							},
-							"description": """Here are the 4 pointers you should judge the posture of the user's arms on.
+							"description": """Here are the 7 pointers you should judge the posture of the user's arms on.
 
 							0. Keyboard below elbows
 							1. Mouse in line with elbow
