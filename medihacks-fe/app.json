@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/3.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.mgsium.medihacksfe"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +32,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "32f214b5-27e6-4520-925b-23317f25cd3e"
+      }
     }
   }
 }
